@@ -1,4 +1,13 @@
+.ideia/
+.vscode/
 node_modules
 package-lock.json
 build
-env
+.env
+temp/
+coverage
+ormconfig.json
+dist
+
+uploads/*
+!uploads/ .gitkeep
