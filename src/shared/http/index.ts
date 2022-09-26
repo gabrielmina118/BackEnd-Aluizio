@@ -1,10 +1,11 @@
-import "reflect-metadata"
+import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import { routes } from './routes';
 import BaseError from '../errors/BaseError';
-import "../typeorm"
-
+import '../typeorm';
+import { errors } from 'celebrate';
 
 const app = express();
 
@@ -14,15 +15,15 @@ app.use(express.json());
 // middleware de rotas
 app.use(routes);
 
+app.use(errors());
+
 // middleware de error
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof BaseError) {
     return res.status(error.statusCode).json({ message: error.message });
   }
-
   return res.status(500).send({ message: 'Internal server error!' });
 });
-
 
 app.listen(3003, () => {
   console.log('Server is runnning on port 3003');
