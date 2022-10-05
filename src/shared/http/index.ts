@@ -22,6 +22,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof BaseError) {
     return res.status(error.statusCode).json({ message: error.message });
   }
+
   return res.status(500).send({ message: 'Internal server error!' });
 });
 
