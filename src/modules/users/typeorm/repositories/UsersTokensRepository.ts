@@ -12,9 +12,9 @@ export class UsersTokensRepository extends Repository<UserToken> {
     return userToken;
   }
 
-  public async generete(user_id: string): Promise<UserToken | undefined> {
+  public async generete(user_id: string): Promise<UserToken> {
 
-    const userToken = this.create({
+    const userToken = await this.create({
       user_id,
     });
 

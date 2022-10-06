@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import HashManager from '../HashManager/HashManager';
 import SendForgotPasswordService from '../services/SendForgotPasswordService';
 
 class ForgotPasswordController {

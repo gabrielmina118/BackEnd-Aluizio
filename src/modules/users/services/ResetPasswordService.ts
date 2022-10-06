@@ -12,9 +12,6 @@ interface IRequest {
 
 class ResetPasswordService {
   public async execute({ token, password }: IRequest): Promise<void> {
-    if (!token || !password) {
-      throw new BaseError('Informações devem ser passadas', 404);
-    }
 
     const userRepository = getCustomRepository(UserRepository);
 
@@ -42,7 +39,7 @@ class ResetPasswordService {
 
     user.password = await new HashManager().hash(password)
 
-    // await userRepository.save(user)
+    await userRepository.save(user)
   }
 }
 export default ResetPasswordService;
