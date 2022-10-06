@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import BaseError from '../../../shared/errors/BaseError';
-import Authenticator from '../Authenticator/Authenticator';
+import BaseError from '../../errors/BaseError';
+import Authenticator from '../../../modules/users/Authenticator/Authenticator';
 
 export default function isAuthenticated(
   request: Request,
@@ -14,7 +14,12 @@ export default function isAuthenticated(
   }
 
   try {
-    new Authenticator().getData(authHeader);
+    const decoded = new Authenticator().getData(authHeader);
+
+    request.user={
+      id:decoded.id
+    }
+
     return next();
   } catch (error) {
     throw new BaseError('Invalid JWT Token');

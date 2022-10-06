@@ -2,10 +2,11 @@ import { Request, Response } from 'express';
 import CreateUserService from '../services/CreateUserService';
 import ListUsersServices from '../services/ListUsersServices';
 import HashManager from '../HashManager/HashManager';
-import LoginService from '../services/loginService';
 
 class UsersControllers {
+
   public listUsers = async (req: Request, res: Response): Promise<Response> => {
+
     const listUserServices = new ListUsersServices();
     const users = await listUserServices.execute();
 
@@ -28,7 +29,7 @@ class UsersControllers {
     return res.status(200).send(user);
   };
 
-  
+
 }
 
 export default UsersControllers;

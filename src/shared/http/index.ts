@@ -6,11 +6,14 @@ import { routes } from './routes';
 import BaseError from '../errors/BaseError';
 import '../typeorm';
 import { errors } from 'celebrate';
+import uploadConfig from '../../config/multer/upload';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/files",express.static(uploadConfig.directory))
 
 // middleware de rotas
 app.use(routes);

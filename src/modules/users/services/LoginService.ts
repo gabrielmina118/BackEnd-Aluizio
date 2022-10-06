@@ -20,8 +20,7 @@ interface IResponse {
 }
 
 class LoginService {
-
-  constructor(private hashManager:HashManager){}
+  constructor(private hashManager: HashManager) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     if (!email || !password) {
@@ -51,7 +50,7 @@ class LoginService {
       );
     }
 
-    const token = new Authenticator().generate(userLogin.id);
+    const token = new Authenticator().generate({ id: userLogin.id });
 
     return {
       user: { id: userLogin.id, name: userLogin.name, email: userLogin.email },

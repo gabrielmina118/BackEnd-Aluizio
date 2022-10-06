@@ -22,7 +22,7 @@ class Authenticator {
     return token;
   };
 
-  public getData = (token: string) => {
+  public getData = (token: string):IPayload => {
     const payload = jwt.verify(token, process.env.JWT_KEY!) as IPayload;
 
     return {
