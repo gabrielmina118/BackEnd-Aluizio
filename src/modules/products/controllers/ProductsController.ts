@@ -7,6 +7,7 @@ import UpdateProductService from '../services/UpdateProductService';
 
 export default class ProductsController {
   public async list(req: Request, res: Response): Promise<Response> {
+    
     const products = await new ListProductsServices().execute();
 
     return res.status(200).json(products);
@@ -22,7 +23,7 @@ export default class ProductsController {
 
   public async create(req: Request, res: Response): Promise<Response> {
     const { name, price, quantity } = req.body;
-   
+
     const creteProductService = new CreateProductService()
 
     const productById = await creteProductService.execute({

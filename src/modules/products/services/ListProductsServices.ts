@@ -8,6 +8,7 @@ class ListProductsServices {
 
     const productList = await productRepository.find();
 
+
     return productList;
   }
 }
