@@ -1,5 +1,6 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
+import HashManager from '../HashManager/HashManager';
 import User from '../typeorm/model/User';
 import { UserRepository } from '../typeorm/repositories/UserRepository';
 
@@ -11,9 +12,6 @@ interface IRequest {
 
 class CreateUserService {
   public async execute({ name, email, password }: IRequest): Promise<User> {
-    if (!name || !email || !password) {
-      throw new BaseError('Informações devem ser passadas', 404);
-    }
 
     const userRepository = getCustomRepository(UserRepository);
 
@@ -23,10 +21,12 @@ class CreateUserService {
       throw new BaseError('Usuario ja existente', 401);
     }
 
+    const hashPassword = await new HashManager().hash(password);
+
     const user = userRepository.create({
       name,
       email,
-      password,
+      password: hashPassword,
     });
 
     await userRepository.save(user);

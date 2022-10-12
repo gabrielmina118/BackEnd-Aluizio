@@ -8,8 +8,6 @@ export default class UserAvatarController {
 
     const avatarFileName = req.file?.filename!;
 
-    console.log(avatarFileName);
-
 
     const user = updateUserAvatarService.execute({
       userId: req.user.id,
