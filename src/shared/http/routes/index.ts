@@ -1,4 +1,5 @@
 import {Router } from 'express';
+import { customerRouter } from '../../../modules/customers/routers/customerRouter';
 import { productRouter } from '../../../modules/products/routes/productRouter';
 import { passwordRouter } from '../../../modules/users/routes/passwordRouter';
 import { profileRouter } from '../../../modules/users/routes/profileRouter';
@@ -12,3 +13,4 @@ routes.use("/users",userRouter)
 routes.use("/sessions",sessionsRouter)
 routes.use("/password",passwordRouter)
 routes.use("/profile",profileRouter)
+routes.use("/customer",customerRouter)
