@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import OrdersProducts from '../../../order/typeorm/model/OrdersProducts';
 
 // nome da tabela que ele faz o mapeamento
 @Entity('products')
@@ -10,6 +11,9 @@ class Product {
   // string é o tipo padrão
   @Column()
   name: string;
+
+  @OneToMany(() => OrdersProducts, order_products => order_products.product)
+  order_products: OrdersProducts[];
 
   @Column("decimal")
   price: number;
