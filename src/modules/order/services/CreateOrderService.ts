@@ -16,7 +16,7 @@ interface IRequest {
 }
 
 class CreateOrderService {
-  public async execute({ customer_id, products }: IRequest): Promise<Order> {
+  public async execute({ customer_id, products }: IRequest) {
     const orderRepository = getCustomRepository(OrderRepository);
     const productRepository = getCustomRepository(ProductRepositoy);
     const customerRepository = getCustomRepository(CustomerRepository);
@@ -33,7 +33,9 @@ class CreateOrderService {
     const existProducts = await productRepository.findAllByIds(products);
 
     if (!existProducts.length) {
-      throw new BaseError('Não é possivel achar produtos com esses id');
+      throw new BaseError(
+        'Não é possivel achar produtos com todos os ids informados',
+      );
     }
 
     const existsProductsIds = existProducts.map(product => product.id);
@@ -43,9 +45,9 @@ class CreateOrderService {
     );
 
     if (checkInexistentProducts.length) {
-      checkInexistentProducts.map(product => {
+      checkInexistentProducts.forEach(function (prod) {
         throw new BaseError(
-          `Não foi possivel encontrar o produto com o ID -> ${product.id}`,
+          `Não foi possivel encontrar o produto com o ID -> ${prod.id}`,
         );
       });
     }
@@ -59,16 +61,18 @@ class CreateOrderService {
     if (quantityAvailable.length) {
       quantityAvailable.map(product => {
         throw new BaseError(
-          `A quantidade -> " ${product.quantity} " nao é válida para o produto com id -> " ${product.id} "`,
+          `A quantidade -> '${product.quantity}' nao é válida para o produto com id -> '${product.id}'`,
         );
       });
     }
 
-    const serialProducts = products.map(prod => ({
-      product_id: prod.id,
-      quantity: prod.quantity,
-      price: existProducts.filter(p => p.id === prod.id)[0].price,
-    }));
+    const serialProducts = products.map(prod => {
+      return {
+        product_id: prod.id,
+        quantity: prod.quantity,
+        price: existProducts.filter(p => p.id === prod.id)[0].price,
+      };
+    });
 
     const order = await orderRepository.createOrder({
       customer: customerExist,
@@ -80,12 +84,11 @@ class CreateOrderService {
     const updatedQuantity = order_products.map(product => ({
       id: product.product_id,
       quantity:
-        existProducts.filter(p => p.id === product.id)[0].quantity -
+        existProducts.filter(p => p.id === product.product_id)[0].quantity -
         product.quantity,
     }));
 
-    await productRepository.save(updatedQuantity)
-    
+    await productRepository.save(updatedQuantity);
 
     return order;
   }
