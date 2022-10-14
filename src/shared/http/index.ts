@@ -33,5 +33,5 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(3003, () => {
-  console.log('Server is runnning on port 3003');
+  console.log(`Server is runnning on port ${process.env.APP_API_URL}`);
 });

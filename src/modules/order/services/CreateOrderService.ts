@@ -45,6 +45,7 @@ class CreateOrderService {
     );
 
     if (checkInexistentProducts.length) {
+
       checkInexistentProducts.forEach(function (prod) {
         throw new BaseError(
           `Não foi possivel encontrar o produto com o ID -> ${prod.id}`,
