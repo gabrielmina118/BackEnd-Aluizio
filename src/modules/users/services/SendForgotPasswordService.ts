@@ -1,10 +1,11 @@
+import { config } from 'dotenv';
 import path from 'path';
 import { getCustomRepository } from 'typeorm';
 import EtherealMail from '../../../config/mail/EtherealMail';
 import BaseError from '../../../shared/errors/BaseError';
 import { UserRepository } from '../typeorm/repositories/UserRepository';
 import { UsersTokensRepository } from '../typeorm/repositories/UsersTokensRepository';
-
+config();
 interface IRequest {
   email: string;
 }
@@ -40,7 +41,7 @@ class SendForgotPasswordService {
         file: forgotPasswordTemplate,
         variables: {
           name: user.name,
-          link: `http://localhost:3000/reset_password?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
         },
       },
     });

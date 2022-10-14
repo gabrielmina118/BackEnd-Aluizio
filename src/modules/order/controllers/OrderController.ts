@@ -11,7 +11,7 @@ export default class OrderController {
     const orderById = await showOrderbyId.execute({ id });
 
     return res.status(200).json(orderById);
-  } 
+  }
 
   public async createOrder(req: Request, res: Response): Promise<Response> {
     const { customer_id, products } = req.body;

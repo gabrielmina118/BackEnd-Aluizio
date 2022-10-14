@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
@@ -6,9 +7,11 @@ import { routes } from './routes';
 import BaseError from '../errors/BaseError';
 import '../typeorm';
 import { errors } from 'celebrate';
+import { pagination } from 'typeorm-pagination';
 import uploadConfig from '../../config/multer/upload';
-
+config();
 const app = express();
+app.use(pagination);
 
 app.use(cors());
 app.use(express.json());
