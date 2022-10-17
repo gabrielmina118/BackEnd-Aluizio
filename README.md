@@ -11,6 +11,7 @@
 
 ### rodar o docker -> docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres . Configs iguais a do arquivo ormConfig.json
 
+### container do redis -> docker run --name redis -p 6379:6379 -d -t redis:alpine
 
 ### criar migrations -> yarn typeorm migration:create -n <NomeDaTabela>
 ### - roda a ultima migration -> yarn typeorm migration:run

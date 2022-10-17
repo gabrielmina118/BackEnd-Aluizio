@@ -44,13 +44,12 @@ class CreateOrderService {
       product => !existsProductsIds.includes(product.id),
     );
 
-    if (checkInexistentProducts.length) {
+    const inexistProduct = checkInexistentProducts.map(prod => prod.id);
 
-      checkInexistentProducts.forEach(function (prod) {
-        throw new BaseError(
-          `Não foi possivel encontrar o produto com o ID -> ${prod.id}`,
-        );
-      });
+    if (checkInexistentProducts.length) {
+      throw new BaseError(
+        `Não foi possivel encontrar o produto com o(s) Id(s) -> ${inexistProduct}`,
+      );
     }
 
     const quantityAvailable = products.filter(
