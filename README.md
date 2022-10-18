@@ -1,5 +1,14 @@
 # BackEnd-Aluizio
 
+## Desenvolvido por:
+### :construction_worker: Gabriel Mina da Silva
+
+#### Primeiros passos
+
+1. Clone o repositório;
+2. Dê um  npm install;
+4. Acesse o nosso código
+
 ## config de typescript
 ### tsc --init --rootDir ./src --outdir ./build \
 ### esModuleInterop --resolveJsonModule --lib es6 \
