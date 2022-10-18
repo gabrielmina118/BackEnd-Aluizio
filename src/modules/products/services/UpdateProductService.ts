@@ -36,9 +36,8 @@ class UpdateProductService {
       );
     }
 
-    const redisCache = new RedisCache();
-
-    await redisCache.invalidate('api-vendas-PRODUCT_LIST');
+   
+    await RedisCache.invalidate('api-vendas-PRODUCT_LIST');
 
     product.name = name;
     product.price = price;

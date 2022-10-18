@@ -17,9 +17,8 @@ class DeleteProductService {
       throw new BaseError(`Produto com id '${id}' não encontrado`, 404);
     }
 
-    const redisCache = new RedisCache();
-
-    await redisCache.invalidate("api-vendas-PRODUCT_LIST")
+    
+    await RedisCache.invalidate("api-vendas-PRODUCT_LIST")
 
     await productRepository.remove(product);
   }

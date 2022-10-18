@@ -28,9 +28,7 @@ class CreateProductService {
       throw new BaseError('Produto ja existente', 401);
     }
 
-    const redisCache = new RedisCache();
-
-
+   
     // modelando os dados para inserir
     const product = productsRepository.create({
       name,
@@ -38,7 +36,7 @@ class CreateProductService {
       quantity,
     });
 
-    await redisCache.invalidate("api-vendas-PRODUCT_LIST")
+    await RedisCache.invalidate("api-vendas-PRODUCT_LIST")
 
     // insert do mysql
     await productsRepository.save(product);
