@@ -1,0 +1,16 @@
+{
+  "type": "tipoBanco",
+  "host": "localhost",
+  "username": "username",
+  "password": "password",
+  "database": "database",
+  "entities":[
+    "./dist/modules/**/typeorm/model/*.js"
+  ],
+  "migrations":[
+    "./dist/shared/typeorm/migrations/*.js"
+  ],
+  "cli":{
+    "migrationsDir":"./dist/shared/typeorm/migrations"
+  }
+}
