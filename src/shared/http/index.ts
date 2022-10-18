@@ -9,12 +9,16 @@ import '../typeorm';
 import { errors } from 'celebrate';
 import { pagination } from 'typeorm-pagination';
 import uploadConfig from '../../config/multer/upload';
+import rateLimiter from './middlewares/rateLimiter';
+
 config();
 const app = express();
 app.use(pagination);
 
 app.use(cors());
 app.use(express.json());
+
+app.use(rateLimiter);
 
 app.use('/files', express.static(uploadConfig.directory));
 
@@ -29,9 +33,11 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     return res.status(error.statusCode).json({ message: error.message });
   }
 
-  return res.status(500).send({ message: error.message });
+  console.log(error)
+  return res.status(500).send({ message: "Internal server error" });
 });
 
 app.listen(3003, () => {
   console.log(`Server is runnning on port ${process.env.APP_API_URL}`);
 });
+
