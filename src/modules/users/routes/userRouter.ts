@@ -4,7 +4,7 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import isAuthenticated from '../../../shared/http/middlewares/isAuthenticated';
 import UserAvatarController from '../controllers/UserAvatarController';
 import multer from 'multer';
-import uploadConfig from '../../../config/multer/upload';
+import uploadConfig from "../../../config/multer/upload"
 
 export const userRouter = Router();
 
@@ -12,7 +12,7 @@ const userController = new UsersControllers();
 const userAvatarController = new UserAvatarController();
 
 // middleware do multer com as config
-const upload = multer(uploadConfig);
+const upload = multer(uploadConfig.multer);
 
 userRouter.post(
   '/create',

@@ -5,6 +5,8 @@ import User from '../typeorm/model/User';
 import { UserRepository } from '../typeorm/repositories/UserRepository';
 import uploadConfig from '../../../config/multer/upload';
 import fs from 'fs';
+import DiskStorageProvider from '../../../shared/providers/StorageProvider/DiskStorageProvider';
+import S3StorageProvider from '../../../shared/providers/StorageProvider/S3StorageProvider';
 
 interface IRequest {
   avatarFileName: string;
@@ -21,24 +23,27 @@ class UpdateUserAvatarService {
       throw new BaseError('Usuario não encontrado', 404);
     }
 
-    // juntar o nome do avatar com o caminho dele
-    if (user.avatar) {
-      console.log(user.avatar);
+    if (uploadConfig.driver === 's3') {
+      const s3Provider = new S3StorageProvider();
 
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      // remove arquivos
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
+      if (user.avatar) {
+        await s3Provider.deleteFile(user.avatar);
       }
-    }
+      const fileName = await s3Provider.saveFile(avatarFileName);
+      user.avatar = fileName;
+    } else {
+      const diskProvider = new DiskStorageProvider();
+      if (user.avatar) {
+        await diskProvider.deleteFile(user.avatar);
+      }
 
-    user.avatar = avatarFileName;
+      const fileName = await diskProvider.saveFile(avatarFileName);
+      user.avatar = fileName;
+    }
 
     await userRepository.save(user);
 
-    return user
+    return user;
   }
 }
 export default UpdateUserAvatarService;
