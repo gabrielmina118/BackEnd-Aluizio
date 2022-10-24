@@ -1,6 +1,6 @@
 import { getCustomRepository } from 'typeorm';
-import User from '../typeorm/model/User';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
+import User from '../infra/typeorm/model/User';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 
 
 

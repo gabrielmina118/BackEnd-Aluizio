@@ -1,8 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import HashManager from '../HashManager/HashManager';
-import User from '../typeorm/model/User';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
+import HashManager from '../infra/http/HashManager/HashManager';
+import User from '../infra/typeorm/model/User';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 
 // mudança de senha é opcional
 interface IRequest {

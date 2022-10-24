@@ -1,9 +1,9 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
 import { isAfter, addHours } from 'date-fns';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
-import { UsersTokensRepository } from '../typeorm/repositories/UsersTokensRepository';
-import HashManager from '../HashManager/HashManager';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
+import { UsersTokensRepository } from '../infra/typeorm/repositories/UsersTokensRepository';
+import HashManager from '../infra/http/HashManager/HashManager';
 
 interface IRequest {
   token: string;

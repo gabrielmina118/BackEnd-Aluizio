@@ -1,12 +1,12 @@
 import path from 'path';
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import User from '../typeorm/model/User';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
 import uploadConfig from '../../../config/multer/upload';
 import fs from 'fs';
 import DiskStorageProvider from '../../../shared/providers/StorageProvider/DiskStorageProvider';
 import S3StorageProvider from '../../../shared/providers/StorageProvider/S3StorageProvider';
+import User from '../infra/typeorm/model/User';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 
 interface IRequest {
   avatarFileName: string;

@@ -1,9 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import Authenticator from '../Authenticator/Authenticator';
-import HashManager from '../HashManager/HashManager';
-import User from '../typeorm/model/User';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
+import Authenticator from '../infra/http/Authenticator/Authenticator';
+import HashManager from '../infra/http/HashManager/HashManager';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 
 interface IRequest {
   email: string;

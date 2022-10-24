@@ -1,8 +1,8 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import HashManager from '../HashManager/HashManager';
-import User from '../typeorm/model/User';
-import { UserRepository } from '../typeorm/repositories/UserRepository';
+import HashManager from '../infra/http/HashManager/HashManager';
+import User from '../infra/typeorm/model/User';
+import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 
 interface IRequest {
   name: string;
@@ -12,7 +12,6 @@ interface IRequest {
 
 class CreateUserService {
   public async execute({ name, email, password }: IRequest): Promise<User> {
-
     const userRepository = getCustomRepository(UserRepository);
 
     const userExist = await userRepository.findByEmail(email);

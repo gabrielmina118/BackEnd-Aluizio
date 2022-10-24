@@ -6,7 +6,7 @@
   "module": "typescript",
   "scripts": {
     "start": "node dist/shared/http/index.js",
-    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules ./src/shared/http/index.ts",
+    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/shared/infra/http/index.ts",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",

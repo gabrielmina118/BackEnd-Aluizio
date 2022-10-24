@@ -1,9 +1,9 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import CustomerRepository from '../../customers/typeorm/repositories/CustomerRepository';
-import { ProductRepositoy } from '../../products/typeorm/repositories/ProductsRepository';
-import Order from '../typeorm/model/Order';
-import OrderRepository from '../typeorm/repositories/OrderRepository';
+import CustomerRepository from '../../customers/infra/typeorm/repositories/CustomerRepository';
+import { ProductRepositoy } from '../../products/infra/typeorm/repositories/ProductsRepository';
+import Order from '../infra/typeorm/model/Order';
+import OrderRepository from '../infra/typeorm/repositories/OrderRepository';
 
 interface IProduct {
   id: string;

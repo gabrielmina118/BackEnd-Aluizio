@@ -1,7 +1,7 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
-import { ProductRepositoy } from '../typeorm/repositories/ProductsRepository';
-import Product from '../typeorm/model/Product';
+import { ProductRepositoy } from '../infra/typeorm/repositories/ProductsRepository';
+import Product from '../infra/typeorm/model/Product';
 import RedisCache from '../../../shared/cache/RedisCache';
 
 interface IRequest {
@@ -28,7 +28,7 @@ class CreateProductService {
       throw new BaseError('Produto ja existente', 401);
     }
 
-   
+
     // modelando os dados para inserir
     const product = productsRepository.create({
       name,
