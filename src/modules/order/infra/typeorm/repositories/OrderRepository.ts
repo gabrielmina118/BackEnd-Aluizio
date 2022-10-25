@@ -1,5 +1,7 @@
 import { getRepository, Repository } from 'typeorm';
+import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
 import Customer from '../../../../customers/infra/typeorm/model/ICustomer';
+import { IOrdersRepository } from '../../../domain/IOrdersRepository';
 import Order from '../model/Order';
 
 interface IProduct {
@@ -13,25 +15,27 @@ interface IRequest {
   products: IProduct[];
 }
 
-class OrderRepository {
+class OrderRepository implements IOrdersRepository {
   private ormRepository: Repository<Order>;
 
   constructor() {
     this.ormRepository = getRepository(Order);
   }
 
-  public async save(order: Order): Promise<Order> {
-    await this.ormRepository.save(order);
-    return order;
+  findAll(): Promise<PaginationAwareObject> {
+    const orders = this.ormRepository.createQueryBuilder().paginate();
+    return orders;
   }
 
   public async findById(id: string): Promise<Order | undefined> {
-    const order = this.ormRepository.findOne(id, {
+    const order = this.ormRepository.findOne({
+      where: { id },
       relations: ['order_products', 'customer'],
     });
+
     return order;
   }
-  public async createOrder({ customer, products }: IRequest): Promise<Order> {
+  public async create({ customer, products }: IRequest): Promise<Order> {
     const order = this.ormRepository.create({
       customer,
       order_products: products,

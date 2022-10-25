@@ -8,10 +8,10 @@ interface IRequest {
 }
 
 class ShowOrderService {
-  public async execute({ id }: IRequest): Promise<Order> {
-    const orderRepository = getCustomRepository(OrderRepository);
+  constructor(private orderRepository: OrderRepository) {}
 
-    const orderCustomer = await orderRepository.findById(id);
+  public async execute({ id }: IRequest): Promise<Order> {
+    const orderCustomer = await this.orderRepository.findById(id);
 
     if (!orderCustomer) {
       throw new BaseError(

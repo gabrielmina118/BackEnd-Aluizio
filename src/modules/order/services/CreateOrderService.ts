@@ -20,12 +20,14 @@ interface IRequest {
 }
 
 class CreateOrderService {
-  public async execute({ customer_id, products }: IRequest) {
-    const orderRepository = getCustomRepository(OrderRepository);
-    const productRepository = getCustomRepository(ProductRepositoy);
-    const customerRepository = getCustomRepository(CustomerRepository);
+  constructor(
+    private orderRepository: OrderRepository,
+    private customerRepository: CustomerRepository,
+    private productRepository: ProductRepositoy,
+  ) {}
 
-    const customerExist = await customerRepository.findById(customer_id);
+  public async execute({ customer_id, products }: IRequest) {
+    const customerExist = await this.customerRepository.findById(customer_id);
 
     if (!customerExist) {
       throw new BaseError(
@@ -34,7 +36,7 @@ class CreateOrderService {
       );
     }
 
-    const existProducts = await productRepository.findAllByIds(products);
+    const existProducts = await this.productRepository.findAllByIds(products);
 
     if (!existProducts.length) {
       throw new BaseError(
@@ -78,7 +80,7 @@ class CreateOrderService {
       };
     });
 
-    const order = await orderRepository.createOrder({
+    const order = await this.orderRepository.create({
       customer: customerExist,
       products: serialProducts,
     });
@@ -92,7 +94,7 @@ class CreateOrderService {
         product.quantity,
     }));
 
-    await productRepository.save({ ProductCreate: updatedQuantity });
+    await this.productRepository.save({ ProductCreate: updatedQuantity });
 
     return order;
   }
