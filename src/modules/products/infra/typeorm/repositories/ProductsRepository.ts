@@ -5,6 +5,20 @@ interface IFindProducts {
   id: string;
 }
 
+interface ICreateProduct {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface IProductValue {
+  id: string;
+  quantity: number;
+}
+
+export interface IProductCreate {
+  ProductCreate: IProductValue[];
+}
 // conecta com o bd
 
 export class ProductRepositoy {
@@ -12,6 +26,27 @@ export class ProductRepositoy {
 
   constructor() {
     this.ormRepository = getRepository(Product);
+  }
+
+  public async create({
+    name,
+    price,
+    quantity,
+  }: ICreateProduct): Promise<Product> {
+    const product = this.ormRepository.create({ name, price, quantity });
+    return product;
+  }
+
+  public async saveProduct(product: Product): Promise<Product> {
+    await this.ormRepository.save(product);
+    return product;
+  }
+
+  public async save(
+    IProductCreate: IProductCreate,
+  ): Promise<(IProductValue & Product)[]> {
+    const product = await this.ormRepository.save(IProductCreate.ProductCreate);
+    return product;
   }
 
   public async findByName(name: string): Promise<Product | undefined> {

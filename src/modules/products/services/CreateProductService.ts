@@ -11,16 +11,13 @@ interface IRequest {
 }
 
 class CreateProductService {
-
-  public async execute({name,price,quantity}: IRequest): Promise<Product> {
-
-    if(!name || !price || !quantity){
-      throw new BaseError("Infomações devem ser passadas",404)
+  public async execute({ name, price, quantity }: IRequest): Promise<Product> {
+    if (!name || !price || !quantity) {
+      throw new BaseError('Infomações devem ser passadas', 404);
     }
 
     // usa um repository customizado
     const productsRepository = getCustomRepository(ProductRepositoy);
-
 
     const productExists = await productsRepository.findByName(name);
 
@@ -28,18 +25,17 @@ class CreateProductService {
       throw new BaseError('Produto ja existente', 401);
     }
 
-
     // modelando os dados para inserir
-    const product = productsRepository.create({
+    const product = await productsRepository.create({
       name,
       price,
       quantity,
     });
 
-    await RedisCache.invalidate("api-vendas-PRODUCT_LIST")
+    await RedisCache.invalidate('api-vendas-PRODUCT_LIST');
 
     // insert do mysql
-    await productsRepository.save(product);
+    await productsRepository.saveProduct(product);
 
     return product;
   }

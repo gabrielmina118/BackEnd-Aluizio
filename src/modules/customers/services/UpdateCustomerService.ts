@@ -1,5 +1,6 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
+import { ICustomerRepository } from '../domain/ICustomerRepository';
 import Customer from '../infra/typeorm/model/ICustomer';
 import CustomerRepository from '../infra/typeorm/repositories/CustomerRepository';
 
@@ -9,16 +10,17 @@ interface IRequest {
   email: string;
 }
 class UpdateCustomerService {
-  public async execute({ id, name, email }: IRequest): Promise<Customer> {
-    const customerRepository = getCustomRepository(CustomerRepository);
+   constructor(private customerRepository: ICustomerRepository) {}
 
-    const customer = await customerRepository.findById(id);
+  public async execute({ id, name, email }: IRequest): Promise<Customer> {
+
+    const customer = await this.customerRepository.findById(id);
 
     if (!customer) {
       throw new BaseError('cliente não encontrado', 404);
     }
 
-    const customerExist = await customerRepository.findByEmail(email);
+    const customerExist = await this.customerRepository.findByEmail(email);
 
     if (customerExist && customerExist.email !== email) {
       throw new BaseError('ja existe cliente com esse email', 401);
@@ -27,7 +29,7 @@ class UpdateCustomerService {
     customer.name = name;
     customer.email = email;
 
-    await customerRepository.save(customer);
+    await this.customerRepository.save(customer);
 
     return customer;
   }

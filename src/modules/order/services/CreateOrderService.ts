@@ -1,7 +1,11 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
 import CustomerRepository from '../../customers/infra/typeorm/repositories/CustomerRepository';
-import { ProductRepositoy } from '../../products/infra/typeorm/repositories/ProductsRepository';
+import {
+  IProductCreate,
+  IProductValue,
+  ProductRepositoy,
+} from '../../products/infra/typeorm/repositories/ProductsRepository';
 import Order from '../infra/typeorm/model/Order';
 import OrderRepository from '../infra/typeorm/repositories/OrderRepository';
 
@@ -81,14 +85,14 @@ class CreateOrderService {
 
     const { order_products } = order;
 
-    const updatedQuantity = order_products.map(product => ({
+    const updatedQuantity: IProductValue[] = order_products.map(product => ({
       id: product.product_id,
       quantity:
         existProducts.filter(p => p.id === product.product_id)[0].quantity -
         product.quantity,
     }));
 
-    await productRepository.save(updatedQuantity);
+    await productRepository.save({ ProductCreate: updatedQuantity });
 
     return order;
   }

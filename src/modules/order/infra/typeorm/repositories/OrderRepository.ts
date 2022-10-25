@@ -20,6 +20,11 @@ class OrderRepository {
     this.ormRepository = getRepository(Order);
   }
 
+  public async save(order: Order): Promise<Order> {
+    await this.ormRepository.save(order);
+    return order;
+  }
+
   public async findById(id: string): Promise<Order | undefined> {
     const order = this.ormRepository.findOne(id, {
       relations: ['order_products', 'customer'],
