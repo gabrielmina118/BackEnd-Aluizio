@@ -1,4 +1,4 @@
-import { EntityRepository, In, Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 import Product from '../model/Product';
 
 interface IFindProducts {
@@ -6,10 +6,16 @@ interface IFindProducts {
 }
 
 // conecta com o bd
-@EntityRepository(Product)
-export class ProductRepositoy extends Repository<Product> {
+
+export class ProductRepositoy {
+  private ormRepository: Repository<Product>;
+
+  constructor() {
+    this.ormRepository = getRepository(Product);
+  }
+
   public async findByName(name: string): Promise<Product | undefined> {
-    const product = this.findOne({
+    const product = this.ormRepository.findOne({
       where: {
         name,
       },
@@ -21,7 +27,7 @@ export class ProductRepositoy extends Repository<Product> {
   public async findAllByIds(products: IFindProducts[]): Promise<Product[]> {
     const productsIds = products.map(product => product.id);
 
-    const existsProduct = await this.find({
+    const existsProduct = await this.ormRepository.find({
       where: {
         id: In(productsIds),
       },

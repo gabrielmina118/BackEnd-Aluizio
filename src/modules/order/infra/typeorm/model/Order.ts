@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import Customer from '../../../../customers/infra/typeorm/model/Customer';
+import Customer from '../../../../customers/infra/typeorm/model/ICustomer';
 
 import OrdersProducts from './OrdersProducts';
 

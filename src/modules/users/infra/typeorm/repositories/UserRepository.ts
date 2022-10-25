@@ -1,10 +1,15 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, getRepository, Repository } from 'typeorm';
 import User from '../model/User';
 
-@EntityRepository(User)
-export class UserRepository extends Repository<User> {
+export class UserRepository {
+  private ormRepository: Repository<User>;
+
+  constructor() {
+    this.ormRepository = getRepository(User);
+  }
+
   public async findByName(name: string): Promise<User | undefined> {
-    const user = this.findOne({
+    const user = this.ormRepository.findOne({
       where: {
         name,
       },
@@ -13,7 +18,7 @@ export class UserRepository extends Repository<User> {
   }
 
   public async findById(id: string): Promise<User | undefined> {
-    const user = this.findOne({
+    const user = this.ormRepository.findOne({
       where: {
         id,
       },
@@ -22,7 +27,7 @@ export class UserRepository extends Repository<User> {
   }
 
   public async findByEmail(email: string): Promise<User | undefined> {
-    const user = this.findOne({
+    const user = this.ormRepository.findOne({
       where: {
         email,
       },

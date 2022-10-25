@@ -1,8 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ICustomer } from '../../../domain/ICustomer';
 
 // nome da tabela que ele faz o mapeamento
 @Entity('customers')
-class Customer {
+class Customer implements ICustomer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

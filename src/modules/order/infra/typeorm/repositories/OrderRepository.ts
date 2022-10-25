@@ -1,5 +1,5 @@
-import { EntityRepository, Repository } from 'typeorm';
-import Customer from '../../../customers/typeorm/model/Customer';
+import { getRepository, Repository } from 'typeorm';
+import Customer from '../../../../customers/infra/typeorm/model/ICustomer';
 import Order from '../model/Order';
 
 interface IProduct {
@@ -13,18 +13,26 @@ interface IRequest {
   products: IProduct[];
 }
 
-@EntityRepository(Order)
-class OrderRepository extends Repository<Order> {
+class OrderRepository {
+  private ormRepository: Repository<Order>;
+
+  constructor() {
+    this.ormRepository = getRepository(Order);
+  }
+
   public async findById(id: string): Promise<Order | undefined> {
-    const order = this.findOne(id, {
+    const order = this.ormRepository.findOne(id, {
       relations: ['order_products', 'customer'],
     });
     return order;
   }
   public async createOrder({ customer, products }: IRequest): Promise<Order> {
-    const order = this.create({ customer, order_products: products });
+    const order = this.ormRepository.create({
+      customer,
+      order_products: products,
+    });
 
-    await this.save(order);
+    await this.ormRepository.save(order);
 
     return order;
   }
