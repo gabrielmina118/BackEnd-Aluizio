@@ -5,8 +5,8 @@ import EtherealMail from '../../../config/mail/EtherealMail';
 import BaseError from '../../../shared/errors/BaseError';
 import SesMail from '../../../config/mail/SesMail';
 import mailConfig from '../../../config/mail/mail';
-import { UserRepository } from '../../../../dist/modules/users/infra/typeorm/repositories/UserRepository';
-import { UsersTokensRepository } from '../infra/typeorm/repositories/UsersTokensRepository';
+import { IUsersRepository } from '../domain/IUserRepository';
+import { IUserTokenRepository } from '../domain/IUserTokenRepository';
 config();
 
 interface IRequest {
@@ -14,18 +14,19 @@ interface IRequest {
 }
 
 class SendForgotPasswordService {
+  constructor(
+    private userRepository: IUsersRepository,
+    private userTokensRepository: IUserTokenRepository,
+  ) {}
+
   public async execute({ email }: IRequest): Promise<void> {
-    const userRepository = getCustomRepository(UserRepository);
-
-    const userTokensRepository = getCustomRepository(UsersTokensRepository);
-
-    const user = await userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new BaseError('Email não encontrado', 404);
     }
 
-    const { token } = await userTokensRepository.generete(user.id);
+    const { token } = await this.userTokensRepository.generate(user.id);
 
     const forgotPasswordTemplate = path.resolve(
       __dirname,

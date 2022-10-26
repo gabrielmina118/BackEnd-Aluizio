@@ -1,5 +1,6 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
+import { IUsersRepository } from '../domain/IUserRepository';
 import HashManager from '../infra/http/HashManager/HashManager';
 import User from '../infra/typeorm/model/User';
 import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
@@ -14,6 +15,9 @@ interface IRequest {
 }
 
 class UpdateProfileService {
+
+  constructor(private userRepository: IUsersRepository) {}
+
   public async execute({
     user_id,
     name,
@@ -21,15 +25,14 @@ class UpdateProfileService {
     password,
     old_password,
   }: IRequest): Promise<User> {
-    const userRepository = getCustomRepository(UserRepository);
 
-    const user = await userRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new BaseError('Usuário não encontrado', 404);
     }
 
-    const userUpdateEmail = await userRepository.findByEmail(email);
+    const userUpdateEmail = await this.userRepository.findByEmail(email);
 
     if (userUpdateEmail && userUpdateEmail.id !== user_id) {
       throw new BaseError('Ja existe um usuario com esse email', 401);
@@ -41,10 +44,8 @@ class UpdateProfileService {
 
     // senha antiga é realmente aquela que esta no banco de dados.
     if (password && old_password) {
-      const compareOldPassword:boolean = await new HashManager().comparePassword(
-        old_password,
-        user.password,
-      );
+      const compareOldPassword: boolean =
+        await new HashManager().comparePassword(old_password, user.password);
 
       if (!compareOldPassword) {
         throw new BaseError('A senha antiga não coincide com a passada', 401);
@@ -56,9 +57,9 @@ class UpdateProfileService {
     user.name = name;
     user.email = email;
 
-    await userRepository.save(user)
+    await this.userRepository.save(user);
 
-    return user
+    return user;
   }
 }
 

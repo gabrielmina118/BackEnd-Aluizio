@@ -7,6 +7,7 @@ import DiskStorageProvider from '../../../shared/providers/StorageProvider/DiskS
 import S3StorageProvider from '../../../shared/providers/StorageProvider/S3StorageProvider';
 import User from '../infra/typeorm/model/User';
 import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
+import { IUsersRepository } from '../domain/IUserRepository';
 
 interface IRequest {
   avatarFileName: string;
@@ -14,10 +15,10 @@ interface IRequest {
 }
 
 class UpdateUserAvatarService {
+  constructor(private userRepository: IUsersRepository) {}
   public async execute({ userId, avatarFileName }: IRequest): Promise<User> {
-    const userRepository = getCustomRepository(UserRepository);
 
-    const user = await userRepository.findById(userId);
+    const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new BaseError('Usuario não encontrado', 404);
@@ -41,7 +42,7 @@ class UpdateUserAvatarService {
       user.avatar = fileName;
     }
 
-    await userRepository.save(user);
+    await this.userRepository.save(user);
 
     return user;
   }

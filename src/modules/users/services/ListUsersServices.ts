@@ -1,14 +1,13 @@
-import { getCustomRepository } from 'typeorm';
-import User from '../infra/typeorm/model/User';
-import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
-
+import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
+import { IUsersRepository } from '../domain/IUserRepository';
 
 
 class ListUsersServices {
-  public async execute(): Promise<User[]> {
-    const userRepository = getCustomRepository(UserRepository);
+  constructor(private userRepository:IUsersRepository){}
 
-    const allUsers = await userRepository.find();
+  public async execute(): Promise<PaginationAwareObject> {
+
+    const allUsers = await this.userRepository.findAll();
 
     return allUsers;
   }

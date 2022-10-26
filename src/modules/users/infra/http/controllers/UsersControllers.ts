@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import CreateUserService from '../../../services/CreateUserService';
 import ListUsersServices from '../../../services/ListUsersServices';
+import { UserRepository } from '../../typeorm/repositories/UserRepository';
 
 interface IReponse {
   id: string;
@@ -12,27 +13,16 @@ interface IReponse {
 
 class UsersControllers {
   public listUsers = async (req: Request, res: Response): Promise<Response> => {
-    const listUserServices = new ListUsersServices();
+    const listUserServices = new ListUsersServices(new UserRepository());
     const users = await listUserServices.execute();
 
-    const userType: IReponse[] = users.map(user => {
-      const type: IReponse = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        created_at: user.created_at,
-      };
-      return type;
-    });
-
-    return res.status(200).send(userType);
+    return res.status(200).send(users);
   };
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     const { name, email, password } = req.body;
 
-    const createUserService = new CreateUserService();
+    const createUserService = new CreateUserService(new UserRepository());
 
     const user = await createUserService.execute({
       name,

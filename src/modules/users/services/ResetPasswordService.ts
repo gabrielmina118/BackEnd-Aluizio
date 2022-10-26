@@ -4,6 +4,8 @@ import { isAfter, addHours } from 'date-fns';
 import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
 import { UsersTokensRepository } from '../infra/typeorm/repositories/UsersTokensRepository';
 import HashManager from '../infra/http/HashManager/HashManager';
+import { IUsersRepository } from '../domain/IUserRepository';
+import { IUserTokenRepository } from '../domain/IUserTokenRepository';
 
 interface IRequest {
   token: string;
@@ -11,19 +13,18 @@ interface IRequest {
 }
 
 class ResetPasswordService {
+  constructor(
+    private userRepository: IUsersRepository,
+    private userTokensRepository: IUserTokenRepository,
+  ) {}
   public async execute({ token, password }: IRequest): Promise<void> {
-
-    const userRepository = getCustomRepository(UserRepository);
-
-    const userTokensRepository = getCustomRepository(UsersTokensRepository);
-
-    const userToken = await userTokensRepository.findByToken(token);
+    const userToken = await this.userTokensRepository.findByToken(token);
 
     if (!userToken) {
       throw new BaseError('User token não existe');
     }
 
-    const user = await userRepository.findById(userToken.user_id);
+    const user = await this.userRepository.findById(userToken.user_id);
 
     if (!user) {
       throw new BaseError('Usuário não existe');
@@ -34,12 +35,12 @@ class ResetPasswordService {
     const compareDate = addHours(tokenCreatedAt, 2);
 
     if (isAfter(Date.now(), compareDate)) {
-      throw new BaseError("Token expirado. Passou 2hr")
+      throw new BaseError('Token expirado. Passou 2hr');
     }
 
-    user.password = await new HashManager().hash(password)
+    user.password = await new HashManager().hash(password);
 
-    await userRepository.save(user)
+    await this.userRepository.save(user);
   }
 }
 export default ResetPasswordService;

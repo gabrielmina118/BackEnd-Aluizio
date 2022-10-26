@@ -1,5 +1,6 @@
 import { getCustomRepository } from 'typeorm';
 import BaseError from '../../../shared/errors/BaseError';
+import { IUsersRepository } from '../domain/IUserRepository';
 import Authenticator from '../infra/http/Authenticator/Authenticator';
 import HashManager from '../infra/http/HashManager/HashManager';
 import { UserRepository } from '../infra/typeorm/repositories/UserRepository';
@@ -19,16 +20,14 @@ interface IResponse {
 }
 
 class LoginService {
-  constructor(private hashManager: HashManager) {}
+  constructor(
+    private hashManager: HashManager,
+    private userRepository: IUsersRepository,
+  ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
-    if (!email || !password) {
-      throw new BaseError('Informações devem ser passadas', 404);
-    }
 
-    const userRepository = getCustomRepository(UserRepository);
-
-    const userLogin = await userRepository.findByEmail(email);
+    const userLogin = await this.userRepository.findByEmail(email);
 
     if (!userLogin) {
       throw new BaseError(

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ShowProfileService from '../../../services/ShowProfileService';
 import UpdateProfileService from '../../../services/UpdateProfileService';
+import { UserRepository } from '../../typeorm/repositories/UserRepository';
 
 class ProfileController {
   public showProfile = async (
@@ -8,18 +9,17 @@ class ProfileController {
     res: Response,
   ): Promise<Response> => {
     const user_id = req.user.id;
-    const showProfileService = new ShowProfileService();
+    const showProfileService = new ShowProfileService(new UserRepository());
     const user = await showProfileService.execute({ user_id });
 
     return res.status(200).send(user);
   };
 
   public update = async (req: Request, res: Response): Promise<Response> => {
-
-    const user_id:string = req.user.id;
+    const user_id: string = req.user.id;
     const { name, email, password, old_password } = req.body;
 
-    const updateProfileService = new UpdateProfileService();
+    const updateProfileService = new UpdateProfileService(new UserRepository());
 
     const userUpdate = await updateProfileService.execute({
       user_id,
