@@ -1,4 +1,10 @@
 import { getRepository, In, Repository } from 'typeorm';
+import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
+import { IProduct } from '../../../domain/IProduct';
+import {
+  IProductsRepository,
+  IUpdateStockProduct,
+} from '../../../domain/IProductsRepository';
 import Product from '../model/Product';
 
 interface IFindProducts {
@@ -21,7 +27,7 @@ export interface IProductCreate {
 }
 // conecta com o bd
 
-export class ProductRepositoy {
+export class ProductRepositoy implements IProductsRepository {
   private ormRepository: Repository<Product>;
 
   constructor() {
@@ -42,18 +48,14 @@ export class ProductRepositoy {
     return product;
   }
 
-  public async save(
-    IProductCreate: IProductCreate,
-  ): Promise<(IProductValue & Product)[]> {
-    const product = await this.ormRepository.save(IProductCreate.ProductCreate);
-    return product;
+  public async save(product: IProduct): Promise<IProduct> {
+    const products = await this.ormRepository.save(product);
+    return products;
   }
 
   public async findByName(name: string): Promise<Product | undefined> {
     const product = this.ormRepository.findOne({
-      where: {
-        name,
-      },
+      name,
     });
 
     return product;
@@ -69,5 +71,26 @@ export class ProductRepositoy {
     });
 
     return existsProduct;
+  }
+
+  public async findById(id: string): Promise<Product | undefined> {
+    
+    const product = this.ormRepository.findOne({ id });
+
+    return product;
+  }
+
+  public async findAll(): Promise<PaginationAwareObject> {
+    const products = await this.ormRepository.createQueryBuilder().paginate();
+
+    return products;
+  }
+
+  public async updateStock(products: IUpdateStockProduct[]): Promise<void> {
+    await this.ormRepository.save(products);
+  }
+
+  public async remove(product: Product): Promise<void> {
+    await this.ormRepository.remove(product);
   }
 }

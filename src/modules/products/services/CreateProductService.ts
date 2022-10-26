@@ -11,22 +11,19 @@ interface IRequest {
 }
 
 class CreateProductService {
+
+  constructor(private productsRepository: ProductRepositoy) {}
+  
   public async execute({ name, price, quantity }: IRequest): Promise<Product> {
-    if (!name || !price || !quantity) {
-      throw new BaseError('Infomações devem ser passadas', 404);
-    }
 
-    // usa um repository customizado
-    const productsRepository = getCustomRepository(ProductRepositoy);
-
-    const productExists = await productsRepository.findByName(name);
+    const productExists = await this.productsRepository.findByName(name);
 
     if (productExists) {
       throw new BaseError('Produto ja existente', 401);
     }
 
     // modelando os dados para inserir
-    const product = await productsRepository.create({
+    const product = await this.productsRepository.create({
       name,
       price,
       quantity,
@@ -35,7 +32,7 @@ class CreateProductService {
     await RedisCache.invalidate('api-vendas-PRODUCT_LIST');
 
     // insert do mysql
-    await productsRepository.saveProduct(product);
+    await this.productsRepository.saveProduct(product);
 
     return product;
   }

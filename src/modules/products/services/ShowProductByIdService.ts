@@ -8,11 +8,10 @@ interface IRequest {
 }
 
 class ShowProductByIdService {
+  constructor(private productsRepository: ProductRepositoy) {}
+
   public async execute({ id }: IRequest): Promise<Product> {
-
-    const productRepository = getCustomRepository(ProductRepositoy);
-
-    const product = await productRepository.findOne(id);
+    const product = await this.productsRepository.findById(id);
 
     if (!product) {
       throw new BaseError(`Produto com id ${id} não encontrado`, 404);

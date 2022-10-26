@@ -1,21 +1,20 @@
-import { getCustomRepository } from 'typeorm';
+import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
 import RedisCache from '../../../shared/cache/RedisCache';
-import Product from '../infra/typeorm/model/Product';
 import { ProductRepositoy } from '../infra/typeorm/repositories/ProductsRepository';
 
 class ListProductsServices {
-  public async execute(): Promise<Product[]> {
-    const productRepository = getCustomRepository(ProductRepositoy);
+  constructor(private productsRepository: ProductRepositoy) {}
 
-    let productList = await RedisCache.recover<Product[]>(
+  public async execute() {
+    let productList = await RedisCache.recover<PaginationAwareObject>(
       'api-vendas-PRODUCT_LIST',
     );
 
-    productList = await productRepository.find();
+    productList = await this.productsRepository.findAll();
     await RedisCache.save('api-vendas-PRODUCT_LIST', productList);
 
     if (!productList) {
-      productList = await productRepository.find();
+      productList = await this.productsRepository.findAll();
       await RedisCache.save('api-vendas-PRODUCT_LIST', productList);
     }
 

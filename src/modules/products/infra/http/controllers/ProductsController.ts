@@ -4,11 +4,12 @@ import DeleteProductService from '../../../services/DeleteProductService';
 import ListProductsServices from '../../../services/ListProductsServices';
 import ShowProductByIdService from '../../../services/ShowProductByIdService';
 import UpdateProductService from '../../../services/UpdateProductService';
+import { ProductRepositoy } from '../../typeorm/repositories/ProductsRepository';
 
 export default class ProductsController {
   public async list(req: Request, res: Response): Promise<Response> {
 
-    const products = await new ListProductsServices().execute();
+    const products = await new ListProductsServices(new ProductRepositoy()).execute();
 
     return res.status(200).json(products);
   }
@@ -16,7 +17,7 @@ export default class ProductsController {
   public async showById(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
 
-    const productById = await new ShowProductByIdService().execute({ id });
+    const productById = await new ShowProductByIdService(new ProductRepositoy()).execute({ id });
 
     return res.json(productById);
   }
@@ -24,7 +25,7 @@ export default class ProductsController {
   public async create(req: Request, res: Response): Promise<Response> {
     const { name, price, quantity } = req.body;
 
-    const creteProductService = new CreateProductService()
+    const creteProductService = new CreateProductService(new ProductRepositoy())
 
     const productById = await creteProductService.execute({
       name,
@@ -39,7 +40,7 @@ export default class ProductsController {
     const { name, price, quantity } = req.body;
     const { id } = req.params;
 
-    const updateProduct = await new UpdateProductService().execute({
+    const updateProduct = await new UpdateProductService(new ProductRepositoy()).execute({
       id,
       name,
       price,
@@ -52,7 +53,7 @@ export default class ProductsController {
   public async delete(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
 
-    await new DeleteProductService().execute({ id });
+    await new DeleteProductService(new ProductRepositoy()).execute({ id });
 
     return res.send({message:`produto com ${id} deletado com sucesso`})
   }
