@@ -22,7 +22,6 @@ class CreateCustomerService {
       email,
     });
 
-
     return customer;
   }
 }

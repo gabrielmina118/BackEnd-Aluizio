@@ -16,14 +16,13 @@ class CustomerRepository implements ICustomerRepository {
   }
 
   public async create({ name, email }: ICreateCostumer): Promise<Customer> {
-
     const customer = this.ormRepository.create({ name, email });
-    await this.ormRepository.save(customer)
+    await this.ormRepository.save(customer);
     return customer;
   }
 
-  public async findAll(): Promise<PaginationAwareObject> {
-    const customers = this.ormRepository.createQueryBuilder().paginate();
+  public async findAll(): Promise<Customer[] | undefined> {
+    const customers = this.ormRepository.find();
     return customers;
   }
 
